@@ -10,7 +10,7 @@ from click import argument
 from click import option
 from click import version_option
 
-from jsoncut.cli import load_json
+from jsoncore.cli import jsonfile
 from jsoncut.cli import output
 from jsoncut.sequencer import Items
 from jsoncut.tokenizer import parse_keystr
@@ -34,8 +34,7 @@ def get_results(data, kwds):
     return results
 
 
-@click.command()
-@argument('jsonfile', type=click.Path(readable=True), required=False)
+@click.command(name='jsonflatten')
 @option('-f', '--flatten', 'flatten', multiple=True,
         help=('Flatten only those specified keys generated from `jsoncut -l` '
               'option as a comma-separated list or idividually, i.e. '
@@ -45,18 +44,12 @@ def get_results(data, kwds):
         help='Quote character used in serialized data, defaults to \'"\'')
 @option('-s', '--slice', 'slice_', is_flag=True, help='Disable sequencer')
 @version_option(version='0.2', prog_name='JSON Flatten')
+@jsonfile
 @click.pass_context
 def main(ctx, **kwds):
     """Specify which keys or whole document to flatten."""
     ctx.color = False if kwds['nocolor'] else True
-
-    if not kwds['jsonfile']:
-        if click._termui_impl.isatty(sys.stdin):
-            click.echo(ctx.get_usage())
-            click.echo('Try `jsonflatten --help` for more information.')
-            sys.exit(0)
-
-    data = load_json(ctx, kwds['jsonfile'])
+    data = kwds['jsonfile']
 
     if isinstance(data, Mapping):
         results = get_results(data, kwds)

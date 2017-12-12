@@ -64,44 +64,31 @@ class Config:
         self.color = False
 
 
-@patch('jsonflatten.cli.load_json')
-def test_main_mapping(loadjson_mock):
+def test_main_mapping():
     """
     GIVEN a json-serialized document converted to a python dict
     WHEN the cli.main() function is invoked for an input of type Mapping
     THEN assert entire input is flattened and outputted in the expected
         format
     """
-    kwds = {'jsonfile': 'testfile'}
-    ctx = Context(main, obj=Config())
-    loadjson_mock.return_value = {'testfile': {'k1': 'v1', 'k2': 'v2'}}
-
     runner = CliRunner()
-    result = runner.invoke(main, ['kwds'])
+    result = runner.invoke(main, ['./data/testfileMap.json'])
     expected_output = ['{\n', '"testfile.k1": "v1"', '"testfile.k2": "v2"',
                        '}']
-
     assert all([item in result.output for item in expected_output])
 
 
-@patch('jsonflatten.cli.load_json')
-def test_main_sequence(loadjson_mock):
+def test_main_sequence():
     """
     GIVEN a json-serialized document converted to a python dict
     WHEN the cli.main() function is invoked for an input of type Sequence
     THEN assert entire input is flattened and outputted in the expected
         format
     """
-    kwds = {'jsonfile': 'testfile'}
-    ctx = Context(main, obj=Config())
-    loadjson_mock.return_value = [{'testONE': {'k1': 'v1', 'k2': 'v2'}},
-                                  {'testTWO': {'k3': 'v3', 'k4': 'v4'}}]
-
     runner = CliRunner()
-    result = runner.invoke(main, ['kwds'])
+    result = runner.invoke(main, ['./data/testfileSeq.json'])
     expected_output = ['{\n', '"testONE.k1": "v1"', '"testONE.k2": "v2"',
                        '"testTWO.k3": "v3"', '"testTWO.k4": "v4"', '}']
-
     assert all([item in result.output for item in expected_output])
 
 
@@ -120,7 +107,7 @@ def test_main_no_jsonfile(monkeypatch):
     runner = CliRunner()
     result = runner.invoke(main)
     expected_output = ('Usage: jsonflatten [OPTIONS] [JSONFILE]\n'
-                       'Try `jsonflatten --help` for more information.\n')
+                       'Try `jsonflatten --help\' for more information.\n')
 
     print(result.output)
     assert result.output == expected_output
