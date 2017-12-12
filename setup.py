@@ -43,6 +43,7 @@ setup(
     ],
 
     install_requires=[
+        'jsoncore>=0.6',
         'jsoncut',
         'click>=6.0',
     ],
