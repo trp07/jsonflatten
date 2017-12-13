@@ -12,7 +12,7 @@ from click import version_option
 
 from jsoncore.cli import jsonfile
 from jsoncut.cli import output
-from jsoncut.sequencer import Items
+from jsoncore.sequence import Items
 from jsoncut.tokenizer import parse_keystr
 from jsoncut.treecrawler import find_keys
 
