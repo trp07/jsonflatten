@@ -13,8 +13,8 @@ from click import version_option
 from jsoncore.cli import jsonfile
 from jsoncut.cli import output
 from jsoncore.sequence import Items
-from jsoncut.tokenizer import parse_keystr
-from jsoncut.treecrawler import find_keys
+from jsoncore.parse import parse_keylist
+from jsoncore.jsonfuncts import jsonkeys
 
 from jsonflatten.core import flatten_by_keys
 
@@ -26,8 +26,8 @@ def get_results(data, kwds):
     else:
         args = ','.join(kwds['flatten'])
         data_ = Items([data] if kwds['slice_'] else data)
-        keys = find_keys(data_.value, fullscan=True)
-        keylists = parse_keystr(args, data.items, quotechar=kwds['quotechar'],
+        keys = ['.'.join(key) for key in jsonkeys(data_.value) if key]
+        keylists = parse_keylist(args, data.items, quotechar=kwds['quotechar'],
                                 keys=keys)
         results = flatten_by_keys(data_.value, keys=['.'.join(key)
                                   for key in keylists])
